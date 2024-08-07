@@ -1,6 +1,6 @@
 <h1>Active Directory Home Lab</h1>
 
-The purpose of this lab is to simulate a small-scale enterprise environment. It is written assuming that you have very little or no prior experience using these tools.
+The purpose of this lab is to simulate a small-scale enterprise environment. It is written assuming that you have very little or no prior experience using these tools. I also assume you are using a Windows computer, but should work for MacOS as well.
 The majority of time in this lab will be spent configuring a domain controller running Windows Server 2019. The domain controller will fill a number of roles, such as a DNS server, a remote access server, and handling Active Directory Domain Services.
 In addition to the domain controller, we will also create a Windows 10 Pro client machine to emulate the end-user experience and verify that our domain accounts and Active Directory policies are working as expected.
 
@@ -74,7 +74,32 @@ On the next screen, select the Custom installation method (since we are installi
 
 <p align="center"> <img src="https://i.imgur.com/WaBAjj1.png" height="80%" width="80%" alt="Server 2019 Setup"/> </p>
 
+The installation will likely take awhile, and the virtual machine will reboot itself once it is done.
 
+<p align="center"> <img src="https://i.imgur.com/WI1AyLb.png" height="80%" width="80%" alt="Server 2019 Setup"/> </p>
 
-This installation will likely take awhile, and the virtual machine will reboot itself once it is done.
+Once the installation is done and the machine has rebooted, you'll be prompted to enter a password for the default administrator account.
+
+Enter a password, click Finish, and the system will bring you to the Windows lock screen. Your OS is officially installed!
+
+You may notice that the lock screen says to press Ctrl+Alt+Delete to unlock, but when you enter the command it opens your host machine's Ctrl+Alt+Delete menu instead. This is expected behavior.
+The way to enter Ctrl+Alt+Delete in a VirtualBox VM is to either press the "host key" (right Ctrl by default) and Delete, or to click the Input menu at the top of the window, then Keyboard, then Insert Ctrl+Alt+Delete.
+
+Using this method, you should now be able to enter your administrator password and log into Windows. Once inside Windows, you should see a prompt appear on the right side of your window asking if you'd like to allow this machine to be discoverable on the network. Click Yes.
+
+<p align="center"> <img src="https://i.imgur.com/heND3fY.png" height="80%" width="80%" alt="Server 2019 Setup"/> </p>
+
+The last bit of setup for our OS installation is to install the VirtualBox Guest Additions for Windows. Guest Additions improves the functionality of Windows virtual machines and offers a host of quality of life features, such as dynamic window resizing. This step isn't technically required for the lab to work, but it will make your life much easier.
+
+Open the Devices menu at the top of your window and click on "Insert Guest Additions CD image..." This button essentially inserts a virtual CD-ROM into a virtual CD drive on our virtual machine (virtually!).
+
+<p align="center"> <img src="https://i.imgur.com/qORYzQp.png" height="80%" width="80%" alt="Server 2019 Setup"/> </p>
+
+Once the "CD" has been "inserted", navigate to My Computer and click on the CD drive to open its contents. You should see a list of files and applications. Click the application called "VBoxWindowsAdditions-<b>amd64</b>" to run the installer. Once the installer has run, reboot the machine.
+
+<p align="center"> <img src="https://i.imgur.com/e9MjwU5.png" height="80%" width="80%" alt="Server 2019 Setup"/> </p>
+
+After rebooting, your machine should now have the additions installed. You can verify the install worked by resizing your window. The OS should automatically adjust the display resolution to fit the size of the window. If it doesn't, you can run the installer again and this time select "I will manually reboot later" at the last step, and then shut down and restart the virtual machine.
+
+With the Guest Additions installed, we are finally ready to start diving into our domain controller configuration! The first step is to set up our network interfaces on this machine.
 
