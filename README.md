@@ -1,8 +1,9 @@
 <h1>Active Directory Home Lab</h1>
 
-The purpose of this lab is to simulate a small-scale enterprise environment. There are many tutorials that walk you through the steps to set up an Active Directory lab at home, so I'm trying to provide a little bit more information about the _how_ and _why_ with this guide. The instructions should work for Windows or MacOS, and I'm assuming that you have very limited or no prior experience using these tools.
+The purpose of this lab is to simulate a small-scale enterprise environment and provide a comprehensive, hands-on way to learn the fundementals of networking. There are many tutorials that walk you through the steps to set up an Active Directory lab at home, so I'm trying to provide a little bit more information about the _how_ and _why_ with this guide. The instructions should work for Windows or MacOS, and I'm assuming that you have very limited or no prior experience using these tools.
 
-The majority of time in this lab will be spent configuring a domain controller running Windows Server 2019. The domain controller will fill a number of roles, such as a DNS server, a remote access server, and handling Active Directory Domain Services.
+The majority of time in this lab will be spent configuring a domain controller running Windows Server 2019. In addtion to handling Active Directory domain services, the domain controller will act as the internal network's default gateway and provide critical networking services, like a DNS server, a DHCP server, and a remote access server.
+
 In addition to the domain controller, we will also create a Windows 10 Pro client machine to emulate the end-user experience and verify that our domain accounts and Active Directory policies are working as expected.
 
 
@@ -10,7 +11,7 @@ Upon completion of this lab, you will have:
 
 - Created and configured two virtual machines from ISO images
 - Installed drivers and software using an installation media (guest additions)
-- Assigned static IP addresses and DNS server addresses to the machine's network interfaces
+- Assigned a static IP address, subnet mask, and DNS server address to an internal network adapter
 - ...
 
 
@@ -19,8 +20,9 @@ Upon completion of this lab, you will have:
 - _**Virtualization**_ (havent written explanation yet; will do in revision)
 - DHCP
 - APIPA
-- _**DNS**_ (havent reached this point yet)
-- ...
+- _**IP + Subnet Masks**_ (needs expanded on in the aside)
+- _**DNS**_ (still needs added to the aside)
+- Active Directory
 
 
 <h2>Prerequisites</h2>
@@ -28,6 +30,13 @@ Upon completion of this lab, you will have:
 - [VirtualBox + Extension Pack](https://www.virtualbox.org/wiki/Downloads)
 - [Windows Server 2019 ISO](https://www.microsoft.com/en-us/evalcenter/download-windows-server-2019)
 - [Windows 10 ISO](https://www.microsoft.com/en-us/software-download/windows10)
+
+
+<h1>Part 0: What is Active Directory?</h1>
+
+**TODO**
+
+
 
 <h1>Part 1: Virtual Machine Setup</h1>
 
@@ -68,7 +77,7 @@ Click OK to save your changes. We're done with VirtualBox for the time being, an
 
 <h1>Part 2: Domain Controller Configuration</h1>
 
-<h2>Server 2019 Operating System Installation</h2>
+<h2>Server 2019 Installation</h2>
 
 Double-click the virtual machine to boot it. After a few moments, you'll be prompted to choose a few language and location settings.
 
@@ -99,6 +108,11 @@ Using one of these methods, you should now be able to enter your administrator p
 
 <p align="center"> <img src="https://i.imgur.com/heND3fY.png" height="80%" width="80%" alt="Server 2019 Setup"/> </p>
 
+The first thing I like to when setting up a new machine is to change its name to something more descriptive. This is valuable when you have a large number of devices on a network and don't want to remember a bunch of arbitrary, OS-generated names.
+
+Right click on the Windows menu button (bottom left of your desktop) and click on System. Then click the grey button with the label "Rename this PC". Name it whatever you'd like. I went with "Domain-Controller". Click next and select Restart later.
+
+
 <h2>Installing Guest Additions</h2>
 
 The last bit of setup for our OS installation is to install the VirtualBox Guest Additions for Windows. Guest Additions are a set of drivers and programs that offer a host of quality of life features, such as improved performance and dynamic window resizing. This step isn't technically required for the lab to work, but it will make your life much easier.
@@ -115,6 +129,7 @@ After rebooting, your machine should now have the additions installed. The easie
 
 With the Guest Additions installed, our installation is set up and we are finally ready to start diving into our domain controller configuration! The first step is to set up our network interfaces on this machine.
 
+
 <h2>Configuring Network Interfaces</h2>
 
 Click on the network icon in your system tray (the little icon that looks like a monitor and an ethernet cable at the bottom-right of your screen), and then click on Unidentified network (it may also just say "Network"). You should see a menu with two ethernet adapters listed. We want to click on "Change adapter options" under Related settings. This will bring you to the Network Connections screen where you should see two different ethernet connections.
@@ -127,22 +142,23 @@ First, we need to figure out which adapter is which. Double click on either of t
 
 <p align="center"> <img src="https://i.imgur.com/Xs9jEcN.png" height="80%" width="80%" alt="Server 2019 Setup"/> </p>
 
-This will open a detailed breakdown of that adapters network configuration. If the adapter has a "normal" IP address (usually something like 10.0.2.15) and most of the fields (default gateway, DNS server, etc) filled out, then it is your external adapter. If the adapter has many blank fields and an IP address that starts with 169.254, then it is your internal adapter.
-
-<p align="center">
-  <img src="https://i.imgur.com/MvhUxEz.png" height="80%" width="80%" alt="Server 2019 Setup"/></br>
-  <i>*external adapter - notice the "Lease obtained" and "Lease expires" fields with information in them</i>
-</p>
+This will open a detailed breakdown of that adapters network configuration. If the adapter has an IP address that starts with 169.254, then it is your internal adapter. Otherwise, the adapter will have a "normal" IP address (usually something like 10.0.2.15) and most of the fields (default gateway, DNS server, lease times, etc) will be filled out; this is your external adapter.
 
 <p align="center">
   <img src="https://i.imgur.com/Ie0InIi.png" height="80%" width="80%" alt="Server 2019 Setup"/></br>
-  <i>*internal adapter - notice the empty fields, no lease info, and the 169.254.x.x IP address</i>
+  <i>internal adapter - notice the 169.254.x.x IP address and empty data fields</i>
 </p>
+
+<p align="center">
+  <img src="https://i.imgur.com/MvhUxEz.png" height="80%" width="80%" alt="Server 2019 Setup"/></br>
+  <i>external adapter - notice the standard IP address and "Lease obtained" / "Lease expires" fields with information in them</i>
+</p>
+
 
 
 **__________________**
 
-**Aside - APIPA Addressing:**
+**Aside - APIPA Addressing**
 
 Automatic Private IP Addressing (APIPA) is a feature of Windows that allows a device to assign itself an IP address (sometimes called a link-local address) if it does not receive one from a DHCP server (i.e., your router). APIPA always uses the IP address range of 169.254.0.1 - 169.254.255.254, so it is easy to tell at a glance if a machine failed to received an IP address from your DHCP server / router. With a link-local address, a device can still communicate on the local network it is connected to, but is unable to reach the internet.
 
@@ -153,11 +169,46 @@ Our external adapter can communicate with our router, so our router was able to 
 **__________________**
 
 
+Once you've identified the internal and external adapters, I recommend changing the names (right-click --> rename) of the adapters to something like "internal" and "external" so you don't have to check the IP address each time you're changing adapter configurations.
+
+Okay, lets assign a static IP address to our internal adapter so our clients know where to find this machine.
+
+**__________________**
+
+**Aside - IP Addresses, Subnet Masks, and DNS**
+
+IP addressing is a deep topic with a lot of nuances, but the long and short of it is this: an IP address is a unique address assigned to a particular machine. Just like a street address on a house, an IP address tells other devices on a network where to find a particular machine. Networking devices use IP addresses to route data to and from that machine across the network.
+
+A subnet mask essentially defines the range of addresses within a particular network that a machine can talk to. You will often see a subnet mask of 255.255.255.0, which means that a machine on this network can communicate with any other machine on the network that it shares the first three octets of its IP address with. For example, a machine with an IP address of 192.168.10.10 and a subnet mask of 255.255.255.0 can communicate with any other machine that has an IP address of format 192.168.10.x.
+
+If this is all really confusing, don't worry! The specifics of IP addresses are not important for what we'll be doing in this lab, and you can accomplish a lot with only a basic understanding of networking and a few Google searches.
+
+**__________________**
 
 
+Right click on the internal adapter and select Properties. From the properties list, double-click on Internet Protocol Version 4 (TCP/IPv4).
 
+<p align="center"> <img src="https://i.imgur.com/CUVioLA.png" height="80%" width="80%" alt="Server 2019 Setup"/> </p>
 
+On the IPv4 properties screen, click the "Use the following IP address" radio button and enter an IP address of <b>172.16.0.1</b> and a subnet mask of <b>255.255.255.0</b>.
 
+<p align="center"> <img src="https://i.imgur.com/w9iHQQC.png" height="80%" width="80%" alt="Server 2019 Setup"/> </p>
+
+We can leave the default gateway field empty because this machine is going to be playing the role of default gateway itself. Simply put, a default gateway is the router on your network that will be connected to the internet. We are going to have our client machine(s) connect to our domain controller through the internal adapter we are currently configuring, and then our domain controller will route the traffic through to the external adapter that is connected to our home router. That way, the client machine(s) will have internet access without ever connecting to your home network. Pretty neat stuff!
+
+As for the DNS servers, we are going to use the address <b>127.0.0.1</b>. This is a special IP address known as a loopback address, also known as the "localhost". This IP address is a way for a machine to essentially route network traffic to itself, and has the same behavior as entering this machines IP address (172.16.0.1) into this field.
+
+Why would we use a loopback address for our DNS server you might ask? Active Directory Domain Services (ADDS) utilizes DNS to route traffic to and from a domain controller. So, when we install Active Directory in a few minutes, we can have this machine act as our local DNS server since it is already acting as our default gateway!
+
+We will leave the alternate DNS server address empty for now. The alternative address acts as a fallback server in case the primary server is unable to resolve your DNS request for some reason. It is typically recommended to have an alternate server, but we'll leave it blank for now as a rudimentary way to test our domain controller's DNS functionality later; if it doesn't work with just the DC's address, but does work with an known-good address as an alternate, we can conclude that our DNS service is failing.
+
+Double check all of your addresses are correct, and click OK.
+
+<p align="center"> <img src="https://i.imgur.com/GyUIx77.png" height="80%" width="80%" alt="Server 2019 Setup"/> </p>
+
+<h1>Part 3: Active Directory Domain Services (ADDS)</h1>
+
+<h2>Installing ADDS</h2>
 
 
 
