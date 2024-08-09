@@ -1,10 +1,13 @@
 <h1>Active Directory Home Lab</h1>
 
-The purpose of this lab is to simulate a small-scale enterprise environment and provide a comprehensive, hands-on way to learn the fundementals of networking. There are many tutorials that walk you through the steps to set up an Active Directory lab at home, so I'm trying to provide a little bit more information about the _how_ and _why_ with this guide. The instructions should work for Windows or MacOS, and I'm assuming that you have very limited or no prior experience using these tools.
 
-The majority of time in this lab will be spent configuring a domain controller running Windows Server 2019. In addtion to handling Active Directory domain services, the domain controller will act as the internal network's default gateway and provide critical networking services, like a DNS server, a DHCP server, and a remote access server.
+<h1 align="center">If you are reading this, you are here before this repository is what I would consider "done"! Sections will be in a "rough draft" state and likely incomplete. Thanks for checking it out anyways :)</h1>
 
-In addition to the domain controller, we will also create a Windows 10 Pro client machine to emulate the end-user experience and verify that our domain accounts and Active Directory policies are working as expected.
+The purpose of this lab is to simulate a (very) small-scale enterprise environment and provide a comprehensive, hands-on introduction to the fundementals of networking. There are many tutorials that walk you through the steps to set up a labs similar to this one, but few provide any pertinent information about the _how_ and _why_. I hope this lab will help newcomers understand and contextualize some of these concepts, providing a foundation for future learning. The instructions should work for Windows and MacOS. Finally, I'm assuming that you have very limited or no prior experience using these tools; however, some basic familiarity with using your operating system (installing applications, navigating the file system, etc) is expected.
+
+The majority of time in this lab will be spent configuring a domain controller running Windows Server 2019. In addtion to handling Active Directory domain services, the domain controller will act as the internal network's default gateway and provide critical networking services like a DNS server, a DHCP server, and a remote access server.
+
+In addition to the domain controller, we will also create a Windows 10 Pro client machine and connect it to the network. This machine will be used to emulate the end-user experience and verify that our Active Directory policies, accounts, and networking infrastructure are working as expected.
 
 
 Upon completion of this lab, you will have:
@@ -12,17 +15,20 @@ Upon completion of this lab, you will have:
 - Created and configured two virtual machines from ISO images
 - Installed drivers and software using an installation media (guest additions)
 - Assigned a static IP address, subnet mask, and DNS server address to an internal network adapter
+- Installed various roles and features using the Server Manager application
+- Created an Active Directory domain, organizational unit (OU), and ...
 - ...
 
 
-<h2>Technologies Covered</h2>
+<h2>Tools and Technologies Covered</h2>
 
 - _**Virtualization**_ (havent written explanation yet; will do in revision)
-- DHCP
+- _**DHCP**_ (only linked to currently, but can be quickly worked in)
 - APIPA
-- _**IP + Subnet Masks**_ (needs expanded on in the aside)
+- _**IP Addresses + Subnet Masks**_ (needs expanded on in the aside)
 - _**DNS**_ (still needs added to the aside)
 - Active Directory
+- ...
 
 
 <h2>Prerequisites</h2>
@@ -30,12 +36,6 @@ Upon completion of this lab, you will have:
 - [VirtualBox + Extension Pack](https://www.virtualbox.org/wiki/Downloads)
 - [Windows Server 2019 ISO](https://www.microsoft.com/en-us/evalcenter/download-windows-server-2019)
 - [Windows 10 ISO](https://www.microsoft.com/en-us/software-download/windows10)
-
-
-<h1>Part 0: What is Active Directory?</h1>
-
-**TODO**
-
 
 
 <h1>Part 1: Virtual Machine Setup</h1>
@@ -48,9 +48,9 @@ Click the New button at the top of your VirtualBox window and provide the requir
 
 <p align="center"> <img src="https://i.imgur.com/269sDD0.png" height="80%" width="80%" alt="VirtualBox Setup"/> </p>
 
-On the next screens, specify the amount of hardware resources you'd like your virtual machine to have access to. Ideally you would be able to allocate at least 2GB (2048 MB) of RAM and two processing cores to the machine, but if you're on a relatively modest device or you're unsure about what hardware your host machine has, the default settings should suffice.
+On the next screens, specify the amount of hardware resources you'd like your virtual machine to have access to. Ideally you would be able to allocate at least 2GB (2048 MB) of RAM and two processors to the machine, but if you're on a relatively modest device or you're unsure about what hardware your host machine has, the default settings should suffice.
 
-It is worth noting that the size of the virtual hard disk is the _upper limit_ of storage for the drive, and not how much space it will occupy on your storage device upon creation (unless you select 'Pre allocate Full Size', which I would advise against).
+It is worth noting that the size of the virtual hard disk is the _upper limit_ of storage for the drive, and not how much space it will occupy on your storage device upon creation (unless you select 'Pre allocate Full Size', which you should definitely not do).
 
 <p align="center"> <img src="https://i.imgur.com/KqpOHEZ.png" height="80%" width="80%" alt="VirtualBox Setup"/> </p>
 
@@ -202,7 +202,7 @@ Why would we use a loopback address for our DNS server you might ask? Active Dir
 
 We will leave the alternate DNS server address empty for now. The alternative address acts as a fallback server in case the primary server is unable to resolve your DNS request for some reason. It is typically recommended to have an alternate server, but we'll leave it blank for now as a rudimentary way to test our domain controller's DNS functionality later; if it doesn't work with just the DC's address, but does work with an known-good address as an alternate, we can conclude that our DNS service is failing.
 
-Double check all of your addresses are correct, and click OK.
+Double check all of your addresses are correct and click OK.
 
 <p align="center"> <img src="https://i.imgur.com/GyUIx77.png" height="80%" width="80%" alt="Server 2019 Setup"/> </p>
 
@@ -210,13 +210,44 @@ Double check all of your addresses are correct, and click OK.
 
 <h2>Installing ADDS</h2>
 
+When you first booted Windows, it should have opened the Server Manager application. If you exited out of the app, launch it by clicking on the Windows menu button and locating it in the list of apps or searching for it by name.
 
+On the Server Manager dashboard, find the button that says "Add roles and features" and click it.
 
+<p align="center"> <img src="https://i.imgur.com/RPGkoNC.png" height="80%" width="80%" alt="Server 2019 Setup"/> </p>
 
+This will open the role installation wizard (which is basically just a nerdy name for a step-by-step guide). As we move through the steps of the installation wizard, you're going to see a _lot_ of different roles and features that can be installed. Feel free to poke around and read about any of the roles or features in these menus to get an idea of what they might be used for, but for now lets stick with the default selections unless otherwise mentioned.
 
+Click through the next three pages, making sure the "Role-based or feature-based installation" button is checked on the second page, and that your server is highlighted on the third page.
 
+<p align="center"> <img src="https://i.imgur.com/VUzWVvY.png" height="80%" width="80%" alt="Server 2019 Setup"/> </p>
 
+<p align="center"> <img src="https://i.imgur.com/3kZqYZ2.png" height="80%" width="80%" alt="Server 2019 Setup"/> </p>
 
+You should now be on the list of roles that you can install on this server. Click the checkbox next to Active Directory Domain Services near the top of the list. This will open another window that lists the packages that will be installed.
+
+<p align="center"> <img src="https://i.imgur.com/g2zZcDH.png" height="80%" width="80%" alt="Server 2019 Setup"/> </p>
+
+Click the Add Features button to continue. You should be returned to the "Select server roles" screen with the box next to Active Directory Domain Services now checked.
+
+<p align="center"> <img src="https://i.imgur.com/2onBlJm.png" height="80%" width="80%" alt="Server 2019 Setup"/> </p>
+
+<p align="center"> <img src="https://i.imgur.com/qkpQ6sE.png" height="80%" width="80%" alt="Server 2019 Setup"/> </p>
+
+Use the Next button to move through the next two screens ("Features" and "AD DS"). Make sure your confirmation page lists the same tools as the one pictured below and click the Install button.
+
+<p align="center"> <img src="https://i.imgur.com/gfWLXzR.png" height="80%" width="80%" alt="Server 2019 Setup"/> </p>
+
+Once the installation is done, close the installer if you haven't already.
+
+<h2>Configuring ADDS</h2>
+
+After installing ADDS, you may have noticed a yellow "caution symbol" appear in the top right of the Server Manager window. This appeared because, although we have installed the ADDS software, we still need to configure it! The first step in setting up ADDS is to create a domain.
+
+**What exactly _is_ a domain?**
+**TODO**
+
+Start by clicking on that flag icon with the caution symbol and and clicking "Promote this server to a domain controller".
 
 
 
