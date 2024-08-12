@@ -16,9 +16,8 @@ Upon completion of this lab, you will have:
 - Installed drivers and software using an installation media (guest additions)
 - Assigned a static IP address, subnet mask, and DNS server address to an internal network adapter
 - Installed various roles and features using the Server Manager application
-- Created an Active Directory domain, organizational unit (OU), and ...
-- ...
-
+- Created an Active Directory domain, organizational unit (OU), and domain administrator account
+- Used a PowerShell script to generate ~1000 user accounts
 
 <h2>Tools and Technologies Covered</h2>
 
@@ -27,8 +26,11 @@ Upon completion of this lab, you will have:
 - APIPA
 - _**IP Addresses + Subnet Masks**_ (needs expanded on in the aside)
 - _**DNS**_ (still needs added to the aside)
-- Active Directory
+- Active Directory Domain Services
+- RAS
+- NAT
 - ...
+- PowerShell
 
 
 <h2>Prerequisites</h2>
@@ -240,14 +242,108 @@ Use the Next button to move through the next two screens ("Features" and "AD DS"
 
 Once the installation is done, close the installer if you haven't already.
 
-<h2>Configuring ADDS</h2>
+<h2>Creating a Domain</h2>
 
 After installing ADDS, you may have noticed a yellow "caution symbol" appear in the top right of the Server Manager window. This appeared because, although we have installed the ADDS software, we still need to configure it! The first step in setting up ADDS is to create a domain.
 
 **What exactly _is_ a domain?**
 **TODO**
 
-Start by clicking on that flag icon with the caution symbol and and clicking "Promote this server to a domain controller".
+Start by clicking on that flag icon with the caution symbol, then clicking "Promote this server to a domain controller".
+
+In the deployment configuration menu, click on the radio button next to "Add a new forest". A "forest" is the name we use to describe the root-level (or top-level) structure of an organization's Active Directory domains. In other words, an organization can have multiple domains called "trees", and those trees together make up the "forest".
+
+You can name your forest pretty much anything you want as long as it looks like a regular URL you'd enter in your web browser. I went with "zacksdomain.com". Click Next once you've entered a name.
+
+<p align="center"> <img src="https://i.imgur.com/wRu2bi8.png" height="80%" width="80%" alt="Server 2019 Setup"/> </p>
+
+Similar to when we were installing the ADDS role a moment ago, we are going to leave the rest of the settings in this wizard as the defaults. Read each screen to get an idea of what the wizard is doing here, but don't change anything and click Next through each screen until you are able to click Install. This installation will likely take a few minutes. The machine will restart itself once the install is complete.
+
+<h2>Creating an Organizational Unit and Domain Admin Account(OU)</h2>
+
+Once the machine has restarted, we have officially installed Active Directory and created our very own domain! You may notice when logging in this time that the account name now shows "YOURDOMAIN\administrator". You can still log in as normal, but our next steps will be to create an Organizational Unit within our domain, and our own personal administrator account within that OU.
+
+From the desktop, open the start menu. You should see a new folder called "Windows Administrative Tools". Open that folder and click on "Active Directory Users and Computers".
+
+<p align="center"> <img src="https://i.imgur.com/ZXLC5UP.png" height="80%" width="80%" alt="Server 2019 Setup"/> </p>
+
+You should see your domain in the left pane of this menu. Right click on the domain, hover over New, and select Organizational Unit from the submenu.
+
+**What is an OU?**
+**TODO**
+
+Name your OU "Administrators" and click OK. Your new OU will now appear under your domain on left side of the window.
+
+Right click on the OU, go to New, and select User. Fill this form out with your information. Organizations will typically have a naming conventions for user accounts, and some way to differentiate admin accounts from standard accounts. User accounts are usually something along the lines of first initial and last name (ex: jsmith). Admin accounts will often have a prefix like "admin-" or "a-" in front of the user account (ex: a-jsmith). Once you've filled out this screen, click the Next button and enter a password for this account and uncheck the "User must change password and next logon" option. For the lab, I suggest also checking the "Password never expires" option for simplicity, but that is _not_ typical in an actual production environment. Once you've entered the password, click Next and then Finish. Your account will now appear inside the OU.
+
+<p align="center"> <img src="https://i.imgur.com/rFwjUoP.png" height="80%" width="80%" alt="Server 2019 Setup"/> </p>
+
+Now we need to actually promote the account to an admin account. Right click on the account and select Properties. In the properties menu, click the "Member Of" tab, and click "Add". A new window will pop up asking us to choose a group to add the account to. In the text box, enter "Domain Admins" and click the Check Names button to the right. If entered correctly, "Domain Admins" will be underlined. Click OK. The "Member Of" tab will now show the account as belonging to the domain admins group in addition to the domain users group. Click Apply and OK at the bottom of the Properties window.
+
+<p align="center"> <img src="https://i.imgur.com/9EMOiSr.png" height="80%" width="80%" alt="Server 2019 Setup"/> </p>
+
+Lets take that new admin account for a spin! Sign out of the generic admin account and on the login screen select "Other user". Log in with your new credentials.
+
+<p align="center"> <img src="https://i.imgur.com/qKpHOUB.png" height="80%" width="80%" alt="Server 2019 Setup"/> </p>
+
+Alright administrator, lets get adminstering!
+
+<h2>Installing RAS / NAT</h2>
+
+**WHAT IS NAT?**
+**TODO**
+
+NAT "allows our internal clients to connect to the internet using one public IP address".
+
+**WHAT IS RAS? WHATS IT FOR?**
+**TODO**
+
+Currently, our domain controller can connect to the internet through our external network adapter. Eventually we will want our clients to have internet access from within our private network. To do that, we'll need our domain controller to route traffic from the external network to the internal network. That functionality is provided through NAT and a remote access service, which can all be installed with the "routing" role.
+
+The installation process for the routing role is very similar to the process we used to install ADDS:
+
+Open a Server Manager instance and click on "Add roles or features", make sure "Role-based or feature-based installation" is selected on the installation type screen, select the domain controller on the server selection screen (it will be the only one on the list), and click the check box next to "Remote Access" on the server roles screen, and leave everything default on the features screen.
+
+<p align="center"> <img src="https://i.imgur.com/8MQj83q.png" height="80%" width="80%" alt="Server 2019 Setup"/> </p>
+
+After the features screen, you'll be on a page that explains what the remote access role provides a capable young administrator like yourself. Go ahead and read this page, but don't worry if it's not quite making sense -- it's a pretty jargin-heavy screen. Click Next once you're done, and click the box next to "Routing" on the role services screen. Click Add Features on the pop-up prompt. The wizard will automatically check "DirectAccess and VPN (RAS)" in addition to Routing.
+
+<p align="center"> <img src="https://i.imgur.com/sdQBX69.png" height="80%" width="80%" alt="Server 2019 Setup"/> </p>
+
+<p align="center"> <img src="https://i.imgur.com/hdm6eGd.png" height="80%" width="80%" alt="Server 2019 Setup"/> </p>
+
+Click through the next few screens keeping default selected, and then click Install. Once the installation completes, I strongly recommend restarting the machine. The NAT installation we are about to do seems to have issues when I go straight from installation to setup.
+
+<h2>Configuring RAT / NAT</h2>
+
+Now that we have all of our routing features installed we need to configure them. Click on the Tools button in the top-right of the Server Manager window and select "Routing and Remote Access" from the dropdown menu.
+
+<p align="center"> <img src="https://i.imgur.com/pNQSscL.png" height="80%" width="80%" alt="Server 2019 Setup"/> </p>
+
+In the new window that appears, you should see your domain controller in the left pane. Right click it and select "Configure and Enable Routing and Remote Access".
+
+<p align="center"> <img src="https://i.imgur.com/Ni1feUB.png" height="80%" width="80%" alt="Server 2019 Setup"/> </p>
+
+Click the radio button next to "Network address translation (NAT)" and click Next.
+
+<p align="center"> <img src="https://i.imgur.com/M4pLmUJ.png" height="80%" width="80%" alt="Server 2019 Setup"/> </p>
+
+On the next screen, the button next to "Use this public interface to connnect to the Internet" should be selected automatically, and you should see a list of your network interfaces. If that is the case, select the external interface from the menu and click Next and then Finish. **If the top option is greyed out and you can only select the "Create a new demand-diale interface to the Internet, exit the wizard and restart the machine.** Once the machine restarts, you should be able to select the external interface from the list and continue as normal.
+
+Your screen should look like this:
+
+<p align="center"> <img src="https://i.imgur.com/8HYK7Tg.png" height="80%" width="80%" alt="Server 2019 Setup"/> </p>
+
+Not this:
+
+<p align="center"> <img src="https://i.imgur.com/fgQ5ThC.png" width="80%" alt="Server 2019 Setup"/> </p>
+
+Once the wizard is done setting up NAT, our domain controller should have the ability to route our internet traffic for our clients! Our next step is to set up DHCP so that our clients can get an IP address and actually take advantage of these routing features.
+
+<h2>DHCP Configuration</h2>
+
+
+
 
 
 
