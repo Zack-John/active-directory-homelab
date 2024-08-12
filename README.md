@@ -340,7 +340,62 @@ Not this:
 
 Once the wizard is done setting up NAT, our domain controller should have the ability to route our internet traffic for our clients! Our next step is to set up DHCP so that our clients can get an IP address and actually take advantage of these routing features.
 
-<h2>DHCP Configuration</h2>
+<h2>DHCP Installation and Configuration</h2>
+
+To set up DHCP, we will once again use the "Add roles and features" button on the Server Manager dashboard. This process is more-or-less the same as the first two roles we installed. Use the role-based installation type, select our domain controller, and select "DHCP" server from the server roles list. 
+
+<p align="center"> <img src="https://i.imgur.com/CCqHDJz.png" width="80%" alt="Server 2019 Setup"/> </p>
+
+Leave all of the default features selected, read the DHCP role explanation, and install the role.
+
+Once that is done, click on the Server Manager's Tools menu in the top right and select "DHCP" to open the DHCP configuration panel.
+
+<p align="center"> <img src="https://i.imgur.com/b28eB3M.png" width="80%" alt="Server 2019 Setup"/> </p>
+
+As a reminder, DHCP automatically assigns machines on our network an IP address so that they can use the internet. DHCP servers assign addresses from a specified range called a "scope". Our scope for this lab will be the addresses from 172.16.0.100 through 172.16.0.200.
+
+You should see your domain controller in the left column of the DHCP panel. Select it to reveal two subcategories: IPv4 and IPv6.
+
+<p align="center"> <img src="https://i.imgur.com/jhPC0XG.png" width="80%" alt="Server 2019 Setup"/> </p>
+
+We are only going to configure IPv4 addresses for now, but the process of configuring IPv6 is essentially the same. Click on IPv4 to target it, then right click on IPv4 and select "New Scope..." to open the wizard.
+
+<p align="center"> <img src="https://i.imgur.com/5UvHNOG.png" width="80%" alt="Server 2019 Setup"/> </p>
+
+You would typically assign a name to a scope that explains what the scope belongs to, whether it be the DHCP server that is providing the scope, which department will be assigned to said scope, the range of addresses itself, etc. For this lab, I'm just going to name it the range of addresses ("176.16.0.100-200").
+
+Once you've named the scope, click Next and assign the start and end IP addresses. Increase the length of the mask to 24 and it should automatically change the mask to 255.255.255.0. Once that is done, click Next.
+
+<p align="center"> <img src="https://i.imgur.com/H5Xj7Gf.png" width="80%" alt="Server 2019 Setup"/> </p>
+
+The following screen is where you would apply any address exclusions and delays, which would be addresses within our scope that we _don't_ want to give out to client machines. Since we don't have any addresses we want to exclude, click Next to move on to the lease duration screen. The lease time describes how long a machine is allowed to have an IP address before it has to reach back out to the DHCP server and ask for a lease renewal. For a public network such as a coffee shop's wifi, where you will have many different devices coming and going for brief periods of time, you would typically apply a shorter lease duration. Lets leave the lease duration as the default (eight days) for now.
+
+Once you've moved through those two screens, you will be asked if you want to configure the DHCP options for this scope. Make sure the "Yes" option is selected and click Next.
+
+The first piece of information we need to provide is the IP address of our default gateway. In case you forgot, this machine's "internal" network interface _is_ our default gateway, meaning we need to enter that adapter's IP address (172.168.0.1). Type that address into the IP address text field and click the Add button. The address will appear in the list directly below the text field, meaning you can now select it as the gateway.
+
+<p align="center"> <img src="https://i.imgur.com/6e4SOKb.png" width="80%" alt="Server 2019 Setup"/> </p>
+
+_**TODO: DO I NEED TO ADD THE INTERNAL IP ADDRESS HERE OR DO I USE THE EXTERNAL IP? ONLY EXTERNAL AUTO-POPULATED**_
+
+The next screen is where we specify our DNS server, which is also this machine (recall: when we added ADDS to this machine, it also added DNS capabilities). It should automatically populate the _external_ IP address in the list below. Select it and click Next.
+
+<p align="center"> <img src="https://i.imgur.com/X6z2O84.png" width="80%" alt="Server 2019 Setup"/> </p>
+
+The next screen asking about WINS servers is not applicable to these machines, so you can leave the page black and click Next. Finally, select "Yes, I want to activate this scope now" and click Next, then click Finish.
+
+You should now be able to see the scope we just made under the IPv4 section of the DHCP panel.
+
+<p align="center"> <img src="https://i.imgur.com/lPMvhXa.png" width="80%" alt="Server 2019 Setup"/> </p>
+
+Right click on the domain controller itself and select "Authorize", then right click it again and select "Refresh". You should now see the icons next to IPv4 and IPv6 turn green. This means our DHCP server is good to go!
+
+<p align="center"> <img src="https://i.imgur.com/BQAsiFF.png" width="80%" alt="Server 2019 Setup"/> </p>
+
+At this point, the domain controller should be completely configured to provide networking and Active Directory services to our clients. But before we spin up the client machine to test these features, we will need some user accounts to log in to.
+
+<h2>Creating Active Directory User Accounts</h2>
+
 
 
 
