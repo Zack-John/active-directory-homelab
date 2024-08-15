@@ -396,6 +396,9 @@ At this point, the domain controller should be completely configured to provide 
 
 <h2>Creating Active Directory User Accounts</h2>
 
+To test our systems, we are going to need some users in our domain. For this, we'll use a PowerShell script that you can download here: https://github.com/Zack-John/active-directory-homelab/. To get the script on your domain controller, you'll either need to navigate back to this guide and click the link, or copy the link from your host machine and paste it into the web browser on your virtual machine (this requires you to have shared clipboard enabled like I showed at the beginning of lab).
+
+In the download, you'll find two files: a PowerShell script that will automate the creation of some user accounts, and a text file containing a list of names for the script to use. Lets open up the script and take a look at it.
 
 
 
