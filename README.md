@@ -396,9 +396,21 @@ At this point, the domain controller should be completely configured to provide 
 
 <h2>Creating Active Directory User Accounts</h2>
 
-To test our systems, we are going to need some users in our domain. For this, we'll use a PowerShell script that you can download here: https://github.com/Zack-John/active-directory-homelab/. To get the script on your domain controller, you'll either need to navigate back to this guide and click the link, or copy the link from your host machine and paste it into the web browser on your virtual machine (this requires you to have shared clipboard enabled like I showed at the beginning of lab).
+To test our systems, we are going to need some users in our domain. For this, we'll use a PowerShell script that you can download here: https://github.com/Zack-John/active-directory-homelab/. To get the script on your domain controller, you'll either need to navigate back to this guide on your VM and click the link, or copy the link from your host machine and paste it into the web browser on your virtual machine (this requires you to have shared clipboard enabled -- instructions are at the beginning of this lab).
 
-In the download, you'll find two files: a PowerShell script that will automate the creation of some user accounts, and a text file containing a list of names for the script to use. Lets open up the script and take a look at it.
+In the download, you'll find two files: a PowerShell (.ps1) script that will automate the creation of some user accounts, and a text file containing a list of names for the script to use. Lets open up the script and take a look at it.
+
+Click on your start menu and find the Windows PowerShell folder. Inside the folder you'll see an application called PowerShell ISE. Right click on it and select Run as Administrator. Click yes on the prompt that appears afterwards.
+
+<p align="center"> <img src="FIXME" width="80%" alt="Server 2019 Setup"/> </p>
+
+At the top of the ISE window, click on the button that looks like an open folder and navigate to your Downloads folder, then open the script.
+
+<p align="center"> <img src="FIXME" width="80%" alt="Server 2019 Setup"/> </p>
+
+Lets talk about how this script works:
+
+
 
 
 
