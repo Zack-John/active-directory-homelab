@@ -13,11 +13,12 @@ In addition to the domain controller, we will also create a Windows 10 Pro clien
 Upon completion of this lab, you will have:
 
 - Created and configured two virtual machines from ISO images
-- Installed drivers and software using an installation media (guest additions)
+- Installed drivers and software using a (virtual) installation media (guest additions)
 - Assigned a static IP address, subnet mask, and DNS server address to an internal network adapter
-- Installed various roles and features using the Server Manager application
+- Installed and configured RAS and DNS on Server 2019
+- Installed and configured DHCP on Server 2019
 - Created an Active Directory domain, organizational unit (OU), and domain administrator account
-- Used a PowerShell script to generate ~1000 user accounts
+- Used a PowerShell script to automate user account generation
 
 <h2>Tools and Technologies Covered</h2>
 
@@ -372,15 +373,15 @@ The following screen is where you would apply any address exclusions and delays,
 
 Once you've moved through those two screens, you will be asked if you want to configure the DHCP options for this scope. Make sure the "Yes" option is selected and click Next.
 
-The first piece of information we need to provide is the IP address of our default gateway. In case you forgot, this machine's "internal" network interface _is_ our default gateway, meaning we need to enter that adapter's IP address (172.168.0.1). Type that address into the IP address text field and click the Add button. The address will appear in the list directly below the text field, meaning you can now select it as the gateway.
+The first piece of information we need to provide is the IP address of our default gateway. In case you forgot, this machine's "internal" network interface _is_ our default gateway, meaning we need to enter that adapter's IP address (172.16.0.1). Type that address into the IP address text field and click the Add button. The address will appear in the list directly below the text field, meaning you can now select it as the gateway.
 
 <p align="center"> <img src="https://i.imgur.com/6e4SOKb.png" width="80%" alt="Server 2019 Setup"/> </p>
 
 _**TODO: DO I NEED TO ADD THE INTERNAL IP ADDRESS HERE OR DO I USE THE EXTERNAL IP? ONLY EXTERNAL AUTO-POPULATED**_
 
-The next screen is where we specify our DNS server, which is also this machine (recall: when we added ADDS to this machine, it also added DNS capabilities). It should automatically populate the _external_ IP address in the list below. Select it and click Next.
+The next screen is where we specify our DNS server, which is also this machine (recall: when we added ADDS to this machine, it also added DNS capabilities). It may automatically populate the IP address in the list below. If it doesn't, enter it and click Add like we did on the last page. Then select it and click Next.
 
-<p align="center"> <img src="https://i.imgur.com/X6z2O84.png" width="80%" alt="Server 2019 Setup"/> </p>
+<p align="center"> <img src="https://i.imgur.com/TAMMUx5.png" width="80%" alt="Server 2019 Setup"/> </p>
 
 The next screen asking about WINS servers is not applicable to these machines, so you can leave the page black and click Next. Finally, select "Yes, I want to activate this scope now" and click Next, then click Finish.
 
@@ -396,7 +397,13 @@ At this point, the domain controller should be completely configured to provide 
 
 <h2>Creating Active Directory User Accounts</h2>
 
-To test our systems, we are going to need some users in our domain. For this, we'll use a PowerShell script that you can download here: https://github.com/Zack-John/active-directory-homelab/. To get the script on your domain controller, you'll either need to navigate back to this guide on your VM and click the link, or copy the link from your host machine and paste it into the web browser on your virtual machine (this requires you to have shared clipboard enabled -- instructions are at the beginning of this lab).
+<h3>TODO - Manual Version</h3>
+
+The process for creating a new "regular" user is pretty much identical to the process for creating an admin account. Navigate to...
+
+<h3>TODO - PowerShell Script Version</h3>
+
+To test our systems, we are going to need some users in our domain. For this, we'll use a PowerShell script that you can download from [this directory](https://github.com/Zack-John/active-directory-homelab/). To get the script on your domain controller, you'll either need to navigate to this directory on your VM and click the link, or copy the link from your host machine and paste it into the web browser on your virtual machine (this requires you to have shared clipboard enabled -- instructions are at the beginning of this lab).
 
 In the download, you'll find two files: a PowerShell (.ps1) script that will automate the creation of some user accounts, and a text file containing a list of names for the script to use. Lets open up the script and take a look at it.
 
@@ -408,11 +415,76 @@ At the top of the ISE window, click on the button that looks like an open folder
 
 <p align="center"> <img src="FIXME" width="80%" alt="Server 2019 Setup"/> </p>
 
-Lets talk about how this script works:
+If you're curious about how the script works, I've left comments (the lines that start with #) to explain what segment line is doing.
+
+Before you can run the script, you're first going to have to enter a command that will let you run random downloaded scripts from the internet. This is obviously something you wouldn't do in a production environment, but it's okay for this lab.
+
+Type **Set-ExecutionPolicy Unrestricted** into the terminal at the bottom of your ISE window and press Enter.
+
+<p align="center"> <img src="FIXME" width="80%" alt="Server 2019 Setup"/> </p>
+
+A prompt will appear asking if you want to change your execution policy. Click "Yes to All".
+
+**...TODO...**
 
 
+<h1>Part 3: Client Machine Configuration</h1>
 
+<h2>Creating the Client Virtual Machine</h2>
 
+Just like when we created the virtual machine for the domain controller, we need to create another machine for our client computer. Go back to VirtualBox and click the New button. Give it a descriptive name (I went with "Client (Windows 10)" to keep naming consistent between my DC and this machine). Browse to the folder you want this machine to live in and navigate to your ISO image in the dropdown menus below. Finally, check the Skip Unattended Installation box.
+
+<p align="center"> <img src="https://i.imgur.com/1KGjkOR.png" width="80%" alt="Server 2019 Setup"/> </p>
+
+You will be running both the DC and the client machine at the same time, so if you are short on hardware resources, consider giving the client less memory and fewer processors than your DC. The size of your virtual hard disk shouldn't make much of a difference as long as you make sure not to select the "Pre-allocate Full Size" option. Verify your settings are correct on the last page, and click Finish.
+
+<p align="center"> <img src="https://i.imgur.com/OOEgnW0.png" width="80%" alt="Server 2019 Setup"/> </p>
+
+Once the machine is created, go into the machine settings, navigate to the Network tab, and change the "Attached to" option on Adapter 1 from NAT to Internal Network. Remember that we want this machine to be connected solely to the internal network, so make sure not to enable any other adapters in the Network menu. You can also activate the bidirectional copy and drag'n'drop features like we did on the DC while you're in the settings menu (General -> Advanced).
+
+<p align="center"> <img src="https://i.imgur.com/OOEgnW0.png" width="80%" alt="Server 2019 Setup"/> </p>
+
+Once that's done, go ahead and double click the machine to launch it.
+
+You'll be greeted with the Windows setup screen; very similar to the one we used when we first set up the Server 2019 installation. Select your language settings and click Next, then Install now.
+
+On the following screen you'll be asked to enter a Windows product key in order to activate your copy of Windows. We are just using the evaluation (aka free trial) version of Windows, so click "I don't have a product key" at the bottom of the screen.
+
+<p align="center"> <img src="https://i.imgur.com/6iUlodH.png" width="80%" alt="Server 2019 Setup"/> </p>
+
+A new menu will appear where you're able to choose which edition of Windows you want to install. **Make sure you select Windows 10 Pro!** Windows Home cannot join a domain, so this is a critical step.
+
+<p align="center"> <img src="https://i.imgur.com/TmYMF2U.png" width="80%" alt="Server 2019 Setup"/> </p>
+
+After that, accept the terms of service, select the Custom install option, verify the virtual disk you created during the VirtualBox setup is selected, and let Windows install itself.
+
+<p align="center"> <img src="https://i.imgur.com/cs5YAxS.png" width="80%" alt="Server 2019 Setup"/> </p>
+
+<p align="center"> <img src="https://i.imgur.com/IEY8bqG.png" width="80%" alt="Server 2019 Setup"/> </p>
+
+Once Windows is installed, it will take you through the first-time setup process. Select your region and keyboard layout(s).
+
+On the screen that prompts you to connect to a network, click on the option in the bottom left of the screen that says "I don't have internet". We don't want to connect Windows with a Microsoft account right now, so click "Continue with limited setup" on the following screen to continue with an offline Windows installation.
+
+<p align="center"> <img src="https://i.imgur.com/6YuivNg.png" width="80%" alt="Server 2019 Setup"/> </p>
+
+<p align="center"> <img src="https://i.imgur.com/MbkD0UO.png" width="80%" alt="Server 2019 Setup"/> </p>
+
+When asked who is going to use this machine, just enter "User". Windows is creating a local (this machine only) account here, and we won't really be using this account. We are going to be logging into a domain account that we created earlier on the DC. Then you can either create a password for the local account or simply leave it blank and click next on the following screen.
+
+<p align="center"> <img src="https://i.imgur.com/TuR6c2Y.png" width="80%" alt="Server 2019 Setup"/> </p>
+
+The privacy settings don't necessarily matter on this machine, but I still uncheck all of the options like I would on any other machine. Click Accept once you're done.
+
+<p align="center"> <img src="https://i.imgur.com/UzKUIJh.png" width="80%" alt="Server 2019 Setup"/> </p>
+
+Finally, click "Not now" on the Cortana screen. After a few moments, your Windows 10 install setup is complete!
+
+<p align="center"> <img src="https://i.imgur.com/cTtUPQV.png" width="80%" alt="Server 2019 Setup"/> </p>
+
+If you get a prompt asking if you'd like to make this machine discoverable to your domain, click "Yes".
+
+Our machine should get its IP address automatically from our domain controller's DHCP settings. You should be able to browse the internet on your client machine. You can verify all of your settings are correct by typing "cmd" into the search bar, opening the command prompt, and typing "ipconfig".
 
 
 
