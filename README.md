@@ -1,7 +1,9 @@
-<h1>Active Directory Home Lab</h1>
+<h1 align="center">Active Directory Home Lab</h1>
 
 
-<h1 align="center">If you are reading this, you are here before this repository is what I would consider "done"! Sections will be in a "rough draft" state and likely incomplete. Thanks for checking it out anyways :)</h1>
+<h3 align="center">*This lab is still under construction, and will be in a constant state of editing for awhile. The core process of creating the lab is done, but many "lessons" will be in a rough draft state and/or incomplete. Thanks for your patience :)</h3>
+
+<h2></h2>
 
 The purpose of this lab is to simulate a (very) small-scale enterprise environment and provide a comprehensive, hands-on introduction to the fundementals of networking. There are many tutorials that walk you through the steps to set up a labs similar to this one, but few provide any pertinent information about the _how_ and _why_. I hope this lab will help newcomers understand and contextualize some of these concepts, providing a foundation for future learning. The instructions should work for Windows and MacOS. Finally, I'm assuming that you have very limited or no prior experience using these tools; however, some basic familiarity with using your operating system (installing applications, navigating the file system, etc) is expected.
 
@@ -18,20 +20,20 @@ Upon completion of this lab, you will have:
 - Installed and configured RAS and DNS on Server 2019
 - Installed and configured DHCP on Server 2019
 - Created an Active Directory domain, organizational unit (OU), and domain administrator account
-- Used a PowerShell script to automate user account generation
+- Used a PowerShell script to automate user account generation (?)
+- ...
+
 
 <h2>Tools and Technologies Covered</h2>
 
-- _**Virtualization**_ (havent written explanation yet; will do in revision)
-- _**DHCP**_ (only linked to currently, but can be quickly worked in)
+- Virtualization* (havent written explanation yet)
+- DHCP*
 - APIPA
-- _**IP Addresses + Subnet Masks**_ (needs expanded on in the aside)
+- IP Addresses + Subnet Masks*
 - _**DNS**_ (still needs added to the aside)
 - Active Directory Domain Services
-- RAS
-- NAT
-- ...
-- PowerShell
+- RAS + NAT
+- PowerShell (?)
 
 
 <h2>Prerequisites</h2>
@@ -377,8 +379,6 @@ The first piece of information we need to provide is the IP address of our defau
 
 <p align="center"> <img src="https://i.imgur.com/6e4SOKb.png" width="80%" alt="Server 2019 Setup"/> </p>
 
-_**TODO: DO I NEED TO ADD THE INTERNAL IP ADDRESS HERE OR DO I USE THE EXTERNAL IP? ONLY EXTERNAL AUTO-POPULATED**_
-
 The next screen is where we specify our DNS server, which is also this machine (recall: when we added ADDS to this machine, it also added DNS capabilities). It may automatically populate the IP address in the list below. If it doesn't, enter it and click Add like we did on the last page. Then select it and click Next.
 
 <p align="center"> <img src="https://i.imgur.com/TAMMUx5.png" width="80%" alt="Server 2019 Setup"/> </p>
@@ -484,7 +484,48 @@ Finally, click "Not now" on the Cortana screen. After a few moments, your Window
 
 If you get a prompt asking if you'd like to make this machine discoverable to your domain, click "Yes".
 
-Our machine should get its IP address automatically from our domain controller's DHCP settings. You should be able to browse the internet on your client machine. You can verify all of your settings are correct by typing "cmd" into the search bar, opening the command prompt, and typing "ipconfig".
+Your machine should get its IP address automatically from the DHCP server, and you should be able to browse the internet on your client machine. We have one last thing to do on our client machine before it can be considered complete: join the Active Directory domain.
+
+When setting up a new client machine, you will also want to rename it to something more descriptive than the default, randomly generated name (just like we did for the domain controller). Luckily, Windows has a method to accomplish both of these goals at once!
+
+Right click your start menu and select System. Instead of clicking the "Rename this PC" button like we did on the DC, scroll down until you see another option called "Rename this pc (advanced)".
+
+<p align="center"> <img src="" width="80%" alt="Server 2019 Setup"/> </p>
+
+<p align="center"> <img src="" width="80%" alt="Server 2019 Setup"/> </p>
+
+In the system properties window that appears, locate the text that says "To rename this computer or change its domain or workgroup, click Change" and do exactly that: click the "Change" button next to it.
+
+<p align="center"> <img src="" width="80%" alt="Server 2019 Setup"/> </p>
+
+Change the computer name to something like "Client". Then, locate the textbox that says "Domain" under the "Member of" heading below that. Click the radio button next to "Domain", enter your domain name, and click OK.
+
+<p align="center"> <img src="" width="80%" alt="Server 2019 Setup"/> </p>
+
+You'll be prompted to enter a username and password. Use your domain administrator credentials we created on the domain controller. Once you've entered your credentials successfully, a confirmation message will appear on your screen.
+
+<p align="center"> <img src="" width="80%" alt="Server 2019 Setup"/> </p>
+
+Click OK through all of the prompts and menus that are open, and select the option to Restart Now when prompted.
+
+<p align="center"> <img src="" width="80%" alt="Server 2019 Setup"/> </p>
+
+Once your machine has restarted, you will now be able to log into any of the domain accounts you created during the Active Directory setup. If you go back to your domain controller and open the DHCP panel (under the tools menu in Server Manager), you should be able to see the lease information for the client you created and joined to the domain. You can also view the client machine in the list of computers found in the Active Directory Users and Computers menu (along with all of the user accounts created).
+
+Congratulations, you've now got a working home lab environment with networking infrastructure and Active Directory! This is an excellent jumping off point for the world of enterprise IT. From here, you can study and implement common administrator tasks like account and password management/policy, static IP address assignments, etc.
+
+
+<h1>Troubleshooting</h1>
+
+This is a complicated process we've just gone through, and the likelihood of something going wrong is probably pretty high. In this section I'll go through a few of the basic troubleshooting steps you can take in order to (hopefully) solve any issues you may have run into over the course of the lab. Please understand that troubleshooting and learning to "get good" at google are absolutely critical skills when it comes to the world of IT, so don't feel discouraged if you aren't able to solve your problem with the information provided below. Use it as a challenge and an opportunity to develop your understanding of the environment you've built and hone your troubleshooting skills!
+
+**Have you tried turning it off and back on?**
+
+Yes, seriously. We did a lot of different things that may require a restart in order to work. Different settings we changed, roles/features we installed, etc. can sometimes get hung up and will sort themselves out after a quick reboot. There is a reason every IT professional starts here!
+
+Also, if you're having connectivity issues on your client, make sure your DC is up and running. The DC performs all of the networking functionality, so it must be completely booted up and running in order for your client to work.
+
+**More coming soon!**
 
 
 
