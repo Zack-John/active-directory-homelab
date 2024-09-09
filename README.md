@@ -273,7 +273,7 @@ From the desktop, open the start menu. You should see a new folder called "Windo
 You should see your domain in the left pane of this menu. Right click on the domain, hover over New, and select Organizational Unit from the submenu.
 
 **What is an OU?**
-**TODO**
+**Coming soon!**
 
 Name your OU "Administrators" and click OK. Your new OU will now appear under your domain on left side of the window.
 
@@ -294,12 +294,12 @@ Alright administrator, lets get adminstering!
 <h2>Installing RAS / NAT</h2>
 
 **WHAT IS NAT?**
-**TODO**
+**Coming soon!**
 
-NAT "allows our internal clients to connect to the internet using one public IP address".
+NAT "allows our internal clients to connect to the internet using one public IP address."
 
 **WHAT IS RAS? WHATS IT FOR?**
-**TODO**
+**Coming soon!**
 
 Currently, our domain controller can connect to the internet through our external network adapter. Eventually we will want our clients to have internet access from within our private network. To do that, we'll need our domain controller to route traffic from the external network to the internal network. That functionality is provided through NAT and a remote access service, which can all be installed with the "routing" role.
 
@@ -317,7 +317,7 @@ After the features screen, you'll be on a page that explains what the remote acc
 
 Click through the next few screens keeping default selected, and then click Install. Once the installation completes, I strongly recommend restarting the machine. The NAT installation we are about to do seems to have issues when I go straight from installation to setup.
 
-<h2>Configuring RAT / NAT</h2>
+<h2>Configuring RAS / NAT</h2>
 
 Now that we have all of our routing features installed we need to configure them. Click on the Tools button in the top-right of the Server Manager window and select "Routing and Remote Access" from the dropdown menu.
 
@@ -397,35 +397,7 @@ At this point, the domain controller should be completely configured to provide 
 
 <h2>Creating Active Directory User Accounts</h2>
 
-<h3>TODO - Manual Version</h3>
-
-The process for creating a new "regular" user is pretty much identical to the process for creating an admin account. Navigate to...
-
-<h3>TODO - PowerShell Script Version</h3>
-
-To test our systems, we are going to need some users in our domain. For this, we'll use a PowerShell script that you can download from [this directory](https://github.com/Zack-John/active-directory-homelab/). To get the script on your domain controller, you'll either need to navigate to this directory on your VM and click the link, or copy the link from your host machine and paste it into the web browser on your virtual machine (this requires you to have shared clipboard enabled -- instructions are at the beginning of this lab).
-
-In the download, you'll find two files: a PowerShell (.ps1) script that will automate the creation of some user accounts, and a text file containing a list of names for the script to use. Lets open up the script and take a look at it.
-
-Click on your start menu and find the Windows PowerShell folder. Inside the folder you'll see an application called PowerShell ISE. Right click on it and select Run as Administrator. Click yes on the prompt that appears afterwards.
-
-<p align="center"> <img src="FIXME" width="80%" alt="Server 2019 Setup"/> </p>
-
-At the top of the ISE window, click on the button that looks like an open folder and navigate to your Downloads folder, then open the script.
-
-<p align="center"> <img src="FIXME" width="80%" alt="Server 2019 Setup"/> </p>
-
-If you're curious about how the script works, I've left comments (the lines that start with #) to explain what segment line is doing.
-
-Before you can run the script, you're first going to have to enter a command that will let you run random downloaded scripts from the internet. This is obviously something you wouldn't do in a production environment, but it's okay for this lab.
-
-Type **Set-ExecutionPolicy Unrestricted** into the terminal at the bottom of your ISE window and press Enter.
-
-<p align="center"> <img src="FIXME" width="80%" alt="Server 2019 Setup"/> </p>
-
-A prompt will appear asking if you want to change your execution policy. Click "Yes to All".
-
-**...TODO...**
+The process for creating a new "regular" user is pretty much identical to the process for creating an admin account. Navigate to... **section currently being revised!**
 
 
 <h1>Part 3: Client Machine Configuration</h1>
