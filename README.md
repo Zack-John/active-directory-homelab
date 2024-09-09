@@ -17,23 +17,20 @@ Upon completion of this lab, you will have:
 - Created and configured two virtual machines from ISO images
 - Installed drivers and software using a (virtual) installation media (guest additions)
 - Assigned a static IP address, subnet mask, and DNS server address to an internal network adapter
-- Installed and configured RAS and DNS on Server 2019
-- Installed and configured DHCP on Server 2019
+- Installed and configured RAS and NAT on Server 2019
+- Installed and configured DNS and DHCP on Server 2019
 - Created an Active Directory domain, organizational unit (OU), and domain administrator account
-- Used a PowerShell script to automate user account generation (?)
-- ...
 
 
 <h2>Tools and Technologies Covered</h2>
 
-- Virtualization* (havent written explanation yet)
-- DHCP*
+- Virtualization*
+- DHCP
 - APIPA
-- IP Addresses + Subnet Masks*
-- _**DNS**_ (still needs added to the aside)
+- IP Addresses + Subnet Masks
+- DNS
 - Active Directory Domain Services
 - RAS + NAT
-- PowerShell (?)
 
 
 <h2>Prerequisites</h2>
