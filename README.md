@@ -20,6 +20,7 @@ Upon completion of this lab, you will have:
 - Installed and configured RAS and NAT on Server 2019
 - Installed and configured DNS and DHCP on Server 2019
 - Created an Active Directory domain, organizational unit (OU), and domain administrator account
+- and more!
 
 
 <h2>Tools and Technologies Covered</h2>
