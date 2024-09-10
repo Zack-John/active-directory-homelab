@@ -1,7 +1,7 @@
 <h1 align="center">Active Directory Home Lab</h1>
 
 
-<h3 align="center">*This lab is still under construction, and will be in a constant state of editing for awhile. The core process of creating the lab is done, but many "lessons" will be in a rough draft state and/or incomplete. Thanks for your patience :)</h3>
+<h3 align="center">*The scope of this lab has expanded to incorporate lessons on networking fundementals in addition to the setup guide, and as such is still under construction. The core process of creating the lab is done, but many "lessons" will be in a rough draft state and/or incomplete. Thanks for your patience :)</h3>
 
 <h2></h2>
 
