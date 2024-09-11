@@ -478,7 +478,11 @@ According to the prompt, we need to restart before the changes will be completed
 
 <p align="center"> <img src="https://i.imgur.com/9toaWzX.png" width="80%" alt="Server 2019 Setup"/> </p>
 
-Once your machine has restarted, you will now be able to log into any of the domain accounts you created during the Active Directory setup. If you go back to your domain controller and open the DHCP panel (under the tools menu in Server Manager), you should be able to see the lease information for the client you created and joined to the domain. You can also view the client machine in the list of computers found in the Active Directory Users and Computers menu (along with all of the user accounts created).
+Once your machine has restarted, you will now be able to log into any of the domain accounts you created during the Active Directory setup. To do so, click on "Other user" on the login screen:
+
+<p align="center"> <img src="https://i.imgur.com/db8Cjlq.png" width="80%" alt="Server 2019 Setup"/> </p>
+
+If you go back to your domain controller and open the DHCP panel (under the tools menu in Server Manager), you should be able to see the lease information for the client you created and joined to the domain. You can also view the client machine in the list of computers found in the Active Directory Users and Computers menu (along with all of the user accounts created).
 
 Congratulations, you've now got a working home lab environment with networking infrastructure and Active Directory! This is an excellent jumping off point for the world of enterprise IT. From here, you can study and implement common administrator tasks like account and password management/policy, static IP address assignments, etc.
 
