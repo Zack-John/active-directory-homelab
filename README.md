@@ -460,25 +460,23 @@ When setting up a new client machine, you will also want to rename it to somethi
 
 Right click your start menu and select System. Instead of clicking the "Rename this PC" button like we did on the DC, scroll down until you see another option called "Rename this pc (advanced)".
 
-<p align="center"> <img src="" width="80%" alt="Server 2019 Setup"/> </p>
-
-<p align="center"> <img src="" width="80%" alt="Server 2019 Setup"/> </p>
+<p align="center"> <img src="https://i.imgur.com/eDb47Oe.png" width="80%" alt="Server 2019 Setup"/> </p>
 
 In the system properties window that appears, locate the text that says "To rename this computer or change its domain or workgroup, click Change" and do exactly that: click the "Change" button next to it.
 
-<p align="center"> <img src="" width="80%" alt="Server 2019 Setup"/> </p>
-
 Change the computer name to something like "Client". Then, locate the textbox that says "Domain" under the "Member of" heading below that. Click the radio button next to "Domain", enter your domain name, and click OK.
 
-<p align="center"> <img src="" width="80%" alt="Server 2019 Setup"/> </p>
+<p align="center"> <img src="https://i.imgur.com/1SZtM3r.png" width="80%" alt="Server 2019 Setup"/> </p>
 
 You'll be prompted to enter a username and password. Use your domain administrator credentials we created on the domain controller. Once you've entered your credentials successfully, a confirmation message will appear on your screen.
 
-<p align="center"> <img src="" width="80%" alt="Server 2019 Setup"/> </p>
+<p align="center"> <img src="https://i.imgur.com/J5v2VhZ.png" width="80%" alt="Server 2019 Setup"/> </p>
 
-Click OK through all of the prompts and menus that are open, and select the option to Restart Now when prompted.
+According to the prompt, we need to restart before the changes will be completed. Click OK through all of the prompts and menus that are open and click "Restart Now" on the prompt when given the option.
 
-<p align="center"> <img src="" width="80%" alt="Server 2019 Setup"/> </p>
+<p align="center"> <img src="https://i.imgur.com/E5rPWqf.png" width="80%" alt="Server 2019 Setup"/> </p>
+
+<p align="center"> <img src="https://i.imgur.com/9toaWzX.png" width="80%" alt="Server 2019 Setup"/> </p>
 
 Once your machine has restarted, you will now be able to log into any of the domain accounts you created during the Active Directory setup. If you go back to your domain controller and open the DHCP panel (under the tools menu in Server Manager), you should be able to see the lease information for the client you created and joined to the domain. You can also view the client machine in the list of computers found in the Active Directory Users and Computers menu (along with all of the user accounts created).
 
