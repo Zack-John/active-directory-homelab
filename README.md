@@ -1,8 +1,6 @@
 <h1 align="center">Active Directory Home Lab</h1>
 
 
-<h4 align="center"><i>*Note: The scope of this lab has (greatly) expanded to incorporate lessons on networking fundementals, common troubleshooting steps, and more in addition to the original setup guide. As such, certain parts of the lab are still under construction. The core process of creating the lab is done, but many sections will be in a rough draft state and/or incomplete. </br> Thanks for your patience :)</i></h4>
-
 <h2></h2>
 
 The purpose of this lab is to simulate a (very) small-scale enterprise environment and provide a comprehensive, hands-on introduction to the fundementals of networking. There are many tutorials that walk you through the steps to set up a labs similar to this one, but few provide any pertinent information about the _how_ and _why_. I hope this lab will help newcomers understand and contextualize some of these concepts, providing a foundation for future learning. The instructions should work for Windows and MacOS. Finally, I'm assuming that you have very limited or no prior experience using these tools; however, some basic familiarity with using your operating system (installing applications, navigating the file system, etc) is expected.
